@@ -9,12 +9,6 @@
 namespace CardboardSDK
 {
 
-#define HEAD_TRACKER_MODE_EKF 0
-#define HEAD_TRACKER_MODE_CORE_MOTION 1
-#define HEAD_TRACKER_MODE_CORE_MOTION_EKF 2
-    
-#define HEAD_TRACKER_MODE HEAD_TRACKER_MODE_CORE_MOTION_EKF
-
 #if !TARGET_IPHONE_SIMULATOR
 static const size_t CBDInitialSamplesToSkip = 10;
 #endif
@@ -55,35 +49,6 @@ namespace
         return matrix;
     }
     
-#if HEAD_TRACKER_MODE == HEAD_TRACKER_MODE_CORE_MOTION
-    GLKMatrix4 GLMatrixFromRotationMatrix(CMRotationMatrix rotationMatrix)
-    {
-        GLKMatrix4 glRotationMatrix;
-        
-        glRotationMatrix.m00 = rotationMatrix.m11;
-        glRotationMatrix.m01 = rotationMatrix.m12;
-        glRotationMatrix.m02 = rotationMatrix.m13;
-        glRotationMatrix.m03 = 0.0f;
-        
-        glRotationMatrix.m10 = rotationMatrix.m21;
-        glRotationMatrix.m11 = rotationMatrix.m22;
-        glRotationMatrix.m12 = rotationMatrix.m23;
-        glRotationMatrix.m13 = 0.0f;
-        
-        glRotationMatrix.m20 = rotationMatrix.m31;
-        glRotationMatrix.m21 = rotationMatrix.m32;
-        glRotationMatrix.m22 = rotationMatrix.m33;
-        glRotationMatrix.m23 = 0.0f;
-        
-        glRotationMatrix.m30 = 0.0f;
-        glRotationMatrix.m31 = 0.0f;
-        glRotationMatrix.m32 = 0.0f;
-        glRotationMatrix.m33 = 1.0f;
-        
-        return glRotationMatrix;
-    }
-#endif
-    
 } // anonymous namespace
 
 HeadTracker::HeadTracker() :
@@ -119,37 +84,6 @@ void HeadTracker::startTracking(UIInterfaceOrientation orientation)
     _sampleCount = 0; // used to skip bad data when core motion starts
     
 #if !TARGET_IPHONE_SIMULATOR
-  #if HEAD_TRACKER_MODE == HEAD_TRACKER_MODE_EKF
-    NSOperationQueue *accelerometerQueue = [[NSOperationQueue alloc] init];
-    NSOperationQueue *gyroQueue = [[NSOperationQueue alloc] init];
-    
-    // Probably capped at less than 100Hz
-    // (http://stackoverflow.com/questions/4790111/what-is-the-official-iphone-4-maximum-gyroscope-data-update-frequency)
-    _motionManager.accelerometerUpdateInterval = 1.0/100.0;
-    [_motionManager startAccelerometerUpdatesToQueue:accelerometerQueue withHandler:^(CMAccelerometerData *accelerometerData, NSError *error)
-    {
-        ++_sampleCount;
-        if (_sampleCount <= kInitialSamplesToSkip) { return; }
-        CMAcceleration acceleration = accelerometerData.acceleration;
-        // note core motion uses units of G while the EKF uses ms^-2
-        const float kG = 9.81f;
-        _tracker->processAcceleration(GLKVector3Make(kG*acceleration.x, kG*acceleration.y, kG*acceleration.z), accelerometerData.timestamp);
-    }];
-    
-    _motionManager.gyroUpdateInterval = 1.0/100.0;
-    [_motionManager startGyroUpdatesToQueue:gyroQueue withHandler:^(CMGyroData *gyroData, NSError *error) {
-        if (_sampleCount <= kInitialSamplesToSkip) { return; }
-        CMRotationRate rotationRate = gyroData.rotationRate;
-        _tracker->processGyro(GLKVector3Make(rotationRate.x, rotationRate.y, rotationRate.z), gyroData.timestamp);
-        _lastGyroEventTimestamp = gyroData.timestamp;
-    }];
-  #elif HEAD_TRACKER_MODE == HEAD_TRACKER_MODE_CORE_MOTION
-    if (_motionManager.isDeviceMotionAvailable)
-    {
-        [_motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical];
-        _sampleCount = kInitialSamplesToSkip + 1;
-    }
-  #elif HEAD_TRACKER_MODE == HEAD_TRACKER_MODE_CORE_MOTION_EKF
     NSOperationQueue *deviceMotionQueue = [[NSOperationQueue alloc] init];
     _motionManager.deviceMotionUpdateInterval = 1.0/100.0;
     [_motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical toQueue:deviceMotionQueue withHandler:^(CMDeviceMotion *motion, NSError *error) {
@@ -163,18 +97,13 @@ void HeadTracker::startTracking(UIInterfaceOrientation orientation)
         _tracker->processGyro(GLKVector3Make(rotationRate.x, rotationRate.y, rotationRate.z), motion.timestamp);
         _lastGyroEventTimestamp = motion.timestamp;
     }];
-  #endif
 #endif
 }
 
 void HeadTracker::stopTracking()
 {
-  #if HEAD_TRACKER_MODE == HEAD_TRACKER_MODE_EKF
-    [_motionManager stopAccelerometerUpdates];
-    [_motionManager stopGyroUpdates];
-  #elif HEAD_TRACKER_MODE == HEAD_TRACKER_MODE_CORE_MOTION || HEAD_TRACKER_MODE == HEAD_TRACKER_MODE_CORE_MOTION_EKF
     [_motionManager stopDeviceMotionUpdates];
-  #endif
+
 }
 
 bool HeadTracker::isReady()
@@ -183,33 +112,20 @@ bool HeadTracker::isReady()
         return true;
     #else
         bool isTrackerReady = (_sampleCount > CBDInitialSamplesToSkip);
-        #if HEAD_TRACKER_MODE == HEAD_TRACKER_MODE_EKF || HEAD_TRACKER_MODE == HEAD_TRACKER_MODE_CORE_MOTION_EKF
             isTrackerReady = isTrackerReady && _tracker->isReady();
-        #endif
         return isTrackerReady;
     #endif
 }
 
 GLKMatrix4 HeadTracker::lastHeadView()
-{
-  #if HEAD_TRACKER_MODE == HEAD_TRACKER_MODE_EKF || HEAD_TRACKER_MODE == HEAD_TRACKER_MODE_CORE_MOTION_EKF
-    
+{  
     NSTimeInterval currentTimestamp = CACurrentMediaTime();
     double secondsSinceLastGyroEvent = currentTimestamp - _lastGyroEventTimestamp;
     // 1/30 of a second prediction (shoud it be 1/60?)
     double secondsToPredictForward = secondsSinceLastGyroEvent + 1.0/30;
     GLKMatrix4 deviceFromInertialReferenceFrame = _tracker->getPredictedGLMatrix(secondsToPredictForward);
     
-  #elif HEAD_TRACKER_MODE == HEAD_TRACKER_MODE_CORE_MOTION
-    
-    CMDeviceMotion *motion = _motionManager.deviceMotion;
-    CMRotationMatrix rotationMatrix = motion.attitude.rotationMatrix;
-    GLKMatrix4 deviceFromInertialReferenceFrame = GLKMatrix4Transpose(GLMatrixFromRotationMatrix(rotationMatrix)); // note the matrix inversion
-    
-    if (!motion) { return _lastHeadView; }
-    
-  #endif
-  
+   
     if (!isReady()) { return _lastHeadView; }
 
     if (!_headingCorrectionComputed)
