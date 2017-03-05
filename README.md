@@ -9,7 +9,7 @@ Google has released an official [iOS CardboardSDK](https://developers.google.com
 
 iOS port of  [Google's CardboardSDK](https://github.com/rsanchezsaez/cardboard-java).
 
-*Treasure* example fully running with magnetic trigger detection. Successfully tested on an iPhone 6 running iOS 8 and on a iPhone 5 running iOS 7.
+*Treasure* example fully running with magnetic trigger detection. Successfully tested on an iPhone 6 running *iOS 10* and on a iPhone 5 running iOS 7.
 
 It (mostly) has feature parity with *Android's CardboardSDK v0.5.1*.
 
