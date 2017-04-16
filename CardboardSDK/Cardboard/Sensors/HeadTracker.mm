@@ -86,7 +86,9 @@ void HeadTracker::startTracking(UIInterfaceOrientation orientation)
 #if !TARGET_IPHONE_SIMULATOR
     NSOperationQueue *deviceMotionQueue = [[NSOperationQueue alloc] init];
     _motionManager.deviceMotionUpdateInterval = 1.0/100.0;
-    [_motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical toQueue:deviceMotionQueue withHandler:^(CMDeviceMotion *motion, NSError *error) {
+    [_motionManager startDeviceMotionUpdatesUsingReferenceFrame:CMAttitudeReferenceFrameXArbitraryZVertical
+                                                        toQueue:deviceMotionQueue
+                                                    withHandler:^(CMDeviceMotion *motion, NSError *error) {
         ++_sampleCount;
         if (_sampleCount <= CBDInitialSamplesToSkip) { return; }
         CMAcceleration acceleration = motion.gravity;

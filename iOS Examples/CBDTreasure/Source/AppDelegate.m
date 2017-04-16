@@ -7,7 +7,7 @@
 #import "AppDelegate.h"
 
 #import "TreasureViewController.h"
-
+#import "CBDTreasure-Swift.h"
 //#import "CardboardUnity.h"
 //void _unity_getFrameParameters(float *frameParameters);
 
@@ -26,12 +26,14 @@
     [self.window makeKeyAndVisible];
 
     // Google's treasure example
-    TreasureViewController *cardboardViewController = [TreasureViewController new];
-    
+//    TreasureViewController *cardboardViewController = [TreasureViewController new];
+    VideoStreamViewController *videoStreamViewController = [VideoStreamViewController new];
 //    float *frameParameters = calloc(80, sizeof(float));
 //    _unity_getFrameParameters(frameParameters);
     
-    self.window.rootViewController = cardboardViewController;
+//    self.window.rootViewController = cardboardViewController;
+    
+    self.window.rootViewController = videoStreamViewController;
     
     return YES;
 }

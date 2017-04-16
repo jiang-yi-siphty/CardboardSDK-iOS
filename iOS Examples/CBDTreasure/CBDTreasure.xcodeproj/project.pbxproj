@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		35B1886119ABF053005A9930 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35B1886019ABF053005A9930 /* CoreMotion.framework */; };
 		35B1886319ABF059005A9930 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35B1886219ABF059005A9930 /* GLKit.framework */; };
+		A2E440331EA09B2100E63644 /* VideoStreamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2E440321EA09B2100E63644 /* VideoStreamViewController.swift */; };
 		BC763B3D1A6828DA00463823 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC763B3C1A6828DA00463823 /* AudioToolbox.framework */; };
 		BC9FA04B1A9275660054276F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BC9FA0401A9275660054276F /* AppDelegate.m */; };
 		BC9FA04C1A9275660054276F /* grid_fragment.shader in Resources */ = {isa = PBXBuildFile; fileRef = BC9FA0421A9275660054276F /* grid_fragment.shader */; };
@@ -45,6 +46,8 @@
 		35B1883419ABEF58005A9930 /* CBDTreasure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CBDTreasure.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		35B1886019ABF053005A9930 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		35B1886219ABF059005A9930 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		A26C23D11EA05B810079FD7D /* CBDTreasure-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CBDTreasure-Bridging-Header.h"; sourceTree = "<group>"; };
+		A2E440321EA09B2100E63644 /* VideoStreamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoStreamViewController.swift; sourceTree = "<group>"; };
 		BC6733371A5D90C700C6D79B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BC6733381A5D90C700C6D79B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		BC763B3C1A6828DA00463823 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -160,11 +163,13 @@
 			children = (
 				BC9FA03F1A9275660054276F /* AppDelegate.h */,
 				BC9FA0401A9275660054276F /* AppDelegate.m */,
+				A26C23D11EA05B810079FD7D /* CBDTreasure-Bridging-Header.h */,
 				BC9FA0411A9275660054276F /* shaders */,
 				BC9FA0471A9275660054276F /* TextOverlayView.h */,
 				BC9FA0481A9275660054276F /* TextOverlayView.m */,
 				BC9FA0491A9275660054276F /* TreasureViewController.h */,
 				BC9FA04A1A9275660054276F /* TreasureViewController.m */,
+				A2E440321EA09B2100E63644 /* VideoStreamViewController.swift */,
 			);
 			path = Source;
 			sourceTree = SOURCE_ROOT;
@@ -299,11 +304,13 @@
 		35B1882C19ABEF58005A9930 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					35B1883319ABEF58005A9930 = {
 						CreatedOnToolsVersion = 6.0;
+						DevelopmentTeam = DQK83PW4RV;
+						LastSwiftMigration = 0830;
 					};
 				};
 			};
@@ -355,6 +362,7 @@
 				BC9FA0921A92759C0054276F /* Viewport.mm in Sources */,
 				BC9FA0881A92759C0054276F /* GLStateBackup.mm in Sources */,
 				BC9FA0941A92759C0054276F /* CBDViewController.mm in Sources */,
+				A2E440331EA09B2100E63644 /* VideoStreamViewController.swift in Sources */,
 				BC9FA0511A9275660054276F /* TextOverlayView.m in Sources */,
 				BC9FA0521A9275660054276F /* TreasureViewController.m in Sources */,
 				BC9FA0851A92759C0054276F /* DistortionRenderer.mm in Sources */,
@@ -388,16 +396,20 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -431,15 +443,19 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				DEFINES_MODULE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -449,6 +465,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -457,30 +474,41 @@
 		35B1885519ABEF58005A9930 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = DQK83PW4RV;
 				GCC_INPUT_FILETYPE = automatic;
 				INFOPLIST_FILE = "Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cardboarsdk.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = CBDTreasure;
+				SWIFT_OBJC_BRIDGING_HEADER = "Source/CBDTreasure-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		35B1885619ABEF58005A9930 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = DQK83PW4RV;
 				GCC_INPUT_FILETYPE = automatic;
 				INFOPLIST_FILE = "Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cardboarsdk.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = CBDTreasure;
+				SWIFT_OBJC_BRIDGING_HEADER = "Source/CBDTreasure-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

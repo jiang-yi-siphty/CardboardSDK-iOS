@@ -120,7 +120,11 @@
     
     // Etc
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.2f, 0.2f, 0.2f, 0.5f); // Dark background so text shows up well.
+//    glClearColor(0.2f, 0.2f, 0.2f, 0.5f); // Dark background so text shows up well.
+    
+    glView.opaque = NO;
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     
     // Object first appears directly in front of user.

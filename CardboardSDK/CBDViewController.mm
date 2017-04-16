@@ -168,6 +168,10 @@
                                              selector:@selector(orientationDidChange:)
                                                  name:UIApplicationDidChangeStatusBarOrientationNotification
                                                object:nil];
+//    self.backgoundView = [[UIView alloc] initWithFrame:CGRectMake(30, 30, 40, 40)];
+//    backgoundView.backgroundColor = [UIColor yellowColor];
+//    [self.view addSubview:backgoundView];
+//    [self.view sendSubviewToBack:backgoundView];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -205,6 +209,7 @@
     [super viewDidLoad];
     
     self.preferredFramesPerSecond = 60;
+    //TODO: 🚧🏗🚧👷🏼Make GLKView transparent. Jiang Yi
     self.view.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     if (!self.view.context)
     {
@@ -213,6 +218,9 @@
     self.view.drawableDepthFormat = GLKViewDrawableDepthFormat16;
     
     [self.stereoRendererDelegate setupRendererWithView:self.view];
+//    self.view.opaque = YES;
+////    self.view.backgroundColor = [UIColor clearColor];
+//    self.view.backgroundColor = [UIColor yellowColor];
 }
 
 - (void)dealloc
